@@ -1,58 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/media_provider.dart';
 
 class LibraryScreen extends ConsumerWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final mediaAsync = ref.watch(mediaListProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Flustra')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _SectionHeader(title: 'Continue Watching', onSeeAll: () {}),
-          SizedBox(
-            height: 180,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              separatorBuilder: (_, _) => const SizedBox(width: 12),
-              itemBuilder: (_, i) => _MediaCard(
-                label: 'Item ${i + 1}',
-                onTap: () => context.go('/player/$i'),
+      body: mediaAsync.when(
+        data: (mediaItems) {
+          if (mediaItems.isEmpty) {
+            return const Center(
+              child: Text(
+                'Nenhuma mídia encontrada no servidor.',
+                style: TextStyle(color: Colors.white70),
               ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          _SectionHeader(title: 'Recently Added', onSeeAll: () {}),
-          SizedBox(
-            height: 180,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              separatorBuilder: (_, _) => const SizedBox(width: 12),
-              itemBuilder: (_, i) => _MediaCard(
-                label: 'New Item ${i + 1}',
-                onTap: () => context.go('/player/${i + 10}'),
+            );
+          }
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              _SectionHeader(title: 'Biblioteca de Mídias', onSeeAll: () {}),
+              SizedBox(
+                height: 180,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: mediaItems.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 12),
+                  itemBuilder: (_, i) {
+                    final item = mediaItems[i];
+                    return _MediaCard(
+                      label: item.title,
+                      onTap: () => context.go('/player/${item.id}'),
+                    );
+                  },
+                ),
               ),
+            ],
+          );
+        },
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+        ),
+        error: (err, stack) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Erro ao carregar mídias: $err',
+              style: const TextStyle(color: Colors.redAccent),
+              textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 24),
-          _SectionHeader(title: 'Your Playlists', onSeeAll: () {}),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 4,
-            itemBuilder: (_, i) => ListTile(
-              leading: const Icon(Icons.playlist_play, color: Color(0xFF6C63FF)),
-              title: Text('Playlist ${i + 1}'),
-              subtitle: Text('${(i + 1) * 5} items'),
-              onTap: () {},
-            ),
-          ),
-        ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: 0,

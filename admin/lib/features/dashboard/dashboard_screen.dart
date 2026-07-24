@@ -1,66 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/providers.dart';
+import '../../models/models.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final statusAsync = ref.watch(statusProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset('assets/logo.png', height: 28),
+            Image.asset('assets/logo.png', height: 24),
             const SizedBox(width: 8),
-            const Text('Flustra Admin'),
+            const Text('Dashboard'),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Dashboard', style: theme.textTheme.headlineMedium),
-            const SizedBox(height: 16),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.4,
+      body: statusAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.cloud_off, size: 48, color: Colors.red),
+              const SizedBox(height: 8),
+              Text('Could not connect to server', style: theme.textTheme.bodyLarge),
+              const SizedBox(height: 4),
+              Text('${AppConstants.serverBaseUrl}', style: theme.textTheme.bodySmall),
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                onPressed: () => ref.invalidate(statusProvider),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (status) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  _StatCard(
-                    title: 'Server Status',
-                    value: 'Online',
-                    icon: Icons.check_circle,
-                    color: Colors.green,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: status.status == 'running' ? Colors.green : Colors.orange,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(status.status.toUpperCase(),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
-                  _StatCard(
-                    title: 'Active Sessions',
-                    value: '0',
-                    icon: Icons.people,
-                    color: Colors.blue,
-                  ),
-                  _StatCard(
-                    title: 'Library Size',
-                    value: '0 GB',
-                    icon: Icons.storage,
-                    color: Colors.orange,
-                  ),
-                  _StatCard(
-                    title: 'Uptime',
-                    value: '0h 0m',
-                    icon: Icons.timer,
-                    color: Colors.purple,
-                  ),
+                  const SizedBox(width: 8),
+                  Text('v${status.version}', style: theme.textTheme.bodySmall),
+                  const Spacer(),
+                  Text('DB: ${status.dbType}', style: theme.textTheme.bodySmall),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 1.4,
+                  children: [
+                    _StatCard(
+                      title: 'Uptime',
+                      value: _formatUptime(status.uptimeSecs),
+                      icon: Icons.timer,
+                      color: Colors.purple,
+                    ),
+                    _StatCard(
+                      title: 'Active Sessions',
+                      value: '${status.activeSessions}',
+                      icon: Icons.people,
+                      color: Colors.blue,
+                    ),
+                    _StatCard(
+                      title: 'Media Items',
+                      value: '${status.mediaCount}',
+                      icon: Icons.video_library,
+                      color: Colors.orange,
+                    ),
+                    _StatCard(
+                      title: 'Users',
+                      value: '${status.userCount}',
+                      icon: Icons.person,
+                      color: Colors.green,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  String _formatUptime(int secs) {
+    final h = secs ~/ 3600;
+    final m = (secs % 3600) ~/ 60;
+    final s = secs % 60;
+    if (h > 0) return '${h}h ${m}m';
+    if (m > 0) return '${m}m ${s}s';
+    return '${s}s';
   }
 }
 
@@ -70,12 +121,7 @@ class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const _StatCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
+  const _StatCard({required this.title, required this.value, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +133,10 @@ class _StatCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 28),
-                const Spacer(),
-                Text(value,
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(color: color, fontWeight: FontWeight.bold)),
-              ],
-            ),
+            Icon(icon, color: color, size: 28),
+            Text(value,
+                style: theme.textTheme.headlineSmall
+                    ?.copyWith(color: color, fontWeight: FontWeight.bold)),
             Text(title, style: theme.textTheme.bodyMedium),
           ],
         ),

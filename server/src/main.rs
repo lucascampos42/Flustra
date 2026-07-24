@@ -15,6 +15,7 @@ use flustra_server::storage;
 use flustra_server::APP_CONFIG;
 
 fn main() -> Result<()> {
+    dotenvy::dotenv().ok();
     let cli = Cli::parse();
 
     match cli.command {

@@ -612,6 +612,7 @@ dependencies = [
  "clap",
  "dashmap",
  "directories",
+ "dotenvy",
  "futures-util",
  "hmac",
  "num_cpus",

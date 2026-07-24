@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../core/widgets/sidebar.dart';
 import '../features/dashboard/dashboard_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/logs/logs_screen.dart';
@@ -10,28 +12,23 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      name: 'dashboard',
-      builder: (context, state) => const DashboardScreen(),
+      builder: (context, state) => const AppShell(currentRoute: '/', child: DashboardScreen()),
     ),
     GoRoute(
       path: '/settings',
-      name: 'settings',
-      builder: (context, state) => const SettingsScreen(),
+      builder: (context, state) => const AppShell(currentRoute: '/settings', child: SettingsScreen()),
     ),
     GoRoute(
       path: '/logs',
-      name: 'logs',
-      builder: (context, state) => const LogsScreen(),
+      builder: (context, state) => const AppShell(currentRoute: '/logs', child: LogsScreen()),
     ),
     GoRoute(
       path: '/users',
-      name: 'users',
-      builder: (context, state) => const UsersScreen(),
+      builder: (context, state) => const AppShell(currentRoute: '/users', child: UsersScreen()),
     ),
     GoRoute(
       path: '/plugins',
-      name: 'plugins',
-      builder: (context, state) => const PluginsScreen(),
+      builder: (context, state) => const AppShell(currentRoute: '/plugins', child: PluginsScreen()),
     ),
   ],
 );

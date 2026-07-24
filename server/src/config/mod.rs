@@ -14,6 +14,8 @@ pub struct FlustraConfig {
     pub security: SecurityConfig,
     #[serde(default = "default_plugins")]
     pub plugins: PluginsConfig,
+    #[serde(default = "default_cluster")]
+    pub cluster: ClusterConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -63,6 +65,30 @@ pub struct PluginsConfig {
     pub enabled: Vec<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ClusterConfig {
+    #[serde(default = "default_cluster_enabled")]
+    pub enabled: bool,
+    #[serde(default = "default_node_id")]
+    pub node_id: String,
+    #[serde(default = "default_node_name")]
+    pub node_name: String,
+    #[serde(default = "default_peers")]
+    pub peers: Vec<PeerConfig>,
+    #[serde(default = "default_gossip_interval")]
+    pub gossip_interval_secs: u64,
+    #[serde(default = "default_replica_url")]
+    pub replica_db_url: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PeerConfig {
+    pub id: String,
+    pub address: String,
+    #[serde(default = "default_peer_role")]
+    pub role: String,
+}
+
 fn default_host() -> String {
     "0.0.0.0".into()
 }
@@ -99,6 +125,34 @@ fn default_plugins_dir() -> PathBuf {
 fn default_enabled_plugins() -> Vec<String> {
     vec![]
 }
+fn default_cluster_enabled() -> bool {
+    false
+}
+fn default_node_id() -> String {
+    format!(
+        "node-{}",
+        uuid::Uuid::new_v4()
+            .to_string()
+            .split('-')
+            .next()
+            .unwrap_or("1")
+    )
+}
+fn default_node_name() -> String {
+    "primary".into()
+}
+fn default_peers() -> Vec<PeerConfig> {
+    vec![]
+}
+fn default_gossip_interval() -> u64 {
+    10
+}
+fn default_replica_url() -> Option<String> {
+    None
+}
+fn default_peer_role() -> String {
+    "replica".into()
+}
 
 pub fn default_server() -> ServerConfig {
     ServerConfig {
@@ -130,6 +184,17 @@ pub fn default_security() -> SecurityConfig {
         token_expiry_secs: default_token_expiry(),
         tls_cert: None,
         tls_key: None,
+    }
+}
+
+pub fn default_cluster() -> ClusterConfig {
+    ClusterConfig {
+        enabled: default_cluster_enabled(),
+        node_id: default_node_id(),
+        node_name: default_node_name(),
+        peers: default_peers(),
+        gossip_interval_secs: default_gossip_interval(),
+        replica_db_url: default_replica_url(),
     }
 }
 
@@ -172,6 +237,7 @@ impl FlustraConfig {
             storage: default_storage(),
             security: default_security(),
             plugins: default_plugins(),
+            cluster: default_cluster(),
         })
     }
 

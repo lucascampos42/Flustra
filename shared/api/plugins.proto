@@ -1,0 +1,19 @@
+syntax = "proto3";
+package flustra.api.plugins;
+
+message PluginInfo {
+  string name = 1;
+  string version = 2;
+  bool enabled = 3;
+}
+
+message ListPluginsResponse {
+  repeated PluginInfo plugins = 1;
+}
+
+message TogglePluginRequest {
+  string name = 1;
+  bool enabled = 2;
+}
+
+message Empty {}

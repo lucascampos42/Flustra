@@ -1,0 +1,29 @@
+syntax = "proto3";
+package flustra.api.users;
+
+message User {
+  string id = 1;
+  string username = 2;
+  string role = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string password = 2;
+  string role = 3;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  optional string username = 2;
+  optional string password = 3;
+  optional string role = 4;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+message Empty {}

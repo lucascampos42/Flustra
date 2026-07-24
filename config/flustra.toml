@@ -19,3 +19,14 @@ token_expiry_secs = 86400
 [plugins]
 dir = "plugins/installed"
 enabled = []
+
+[cluster]
+enabled = false
+node_id = "node-1"
+node_name = "primary"
+gossip_interval_secs = 10
+
+[[cluster.peers]]
+id = "node-2"
+address = "192.168.1.2:8081"
+role = "replica"

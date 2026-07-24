@@ -1,0 +1,24 @@
+syntax = "proto3";
+package flustra.api.logs;
+
+message LogEntry {
+  string timestamp = 1;
+  string level = 2;
+  string target = 3;
+  string message = 4;
+  map<string, string> fields = 5;
+}
+
+message ListLogsRequest {
+  optional string level = 1;
+  optional string search = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListLogsResponse {
+  repeated LogEntry entries = 1;
+  int32 total = 2;
+}
+
+message Empty {}

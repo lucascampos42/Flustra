@@ -13,20 +13,25 @@ use tracing::info;
 use crate::api;
 use crate::config::ServerConfig;
 use crate::core::EventBus;
+use crate::storage::DbPool;
 
 pub struct HttpServer {
     config: Arc<ServerConfig>,
     event_bus: EventBus,
+    db_pool: DbPool,
 }
 
 impl HttpServer {
-    pub fn new(config: Arc<ServerConfig>, event_bus: EventBus) -> Self {
-        Self { config, event_bus }
+    pub fn new(config: Arc<ServerConfig>, event_bus: EventBus, db_pool: DbPool) -> Self {
+        Self {
+            config,
+            event_bus,
+            db_pool,
+        }
     }
 
     pub async fn run(self) -> anyhow::Result<()> {
         let addr = SocketAddr::new(self.config.host.parse()?, self.config.port);
-
         let app = self.build_router();
 
         info!("HTTP server listening on {}", addr);
@@ -43,7 +48,10 @@ impl HttpServer {
         let x_request_id = HeaderName::from_static("x-request-id");
 
         Router::new()
-            .nest("/api", api::router(self.event_bus.clone()))
+            .nest(
+                "/api",
+                api::router(self.event_bus.clone(), self.db_pool.clone()),
+            )
             .layer(CompressionLayer::new())
             .layer(CorsLayer::permissive())
             .layer(TraceLayer::new_for_http())

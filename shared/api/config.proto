@@ -1,0 +1,11 @@
+syntax = "proto3";
+package flustra.api.config;
+
+message ConfigResponse {
+  string host = 1;
+  uint32 port = 2;
+  string log_level = 3;
+  string db_type = 4;
+  string data_dir = 5;
+  uint32 max_connections = 6;
+}

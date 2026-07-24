@@ -1,0 +1,20 @@
+syntax = "proto3";
+package flustra.api.server;
+
+message HealthResponse {
+  string status = 1;
+  string version = 2;
+  double uptime_secs = 3;
+}
+
+message StatusResponse {
+  string status = 1;
+  string version = 2;
+  double uptime_secs = 3;
+  uint64 total_requests = 4;
+  uint64 active_sessions = 5;
+  string db_type = 6;
+  uint64 db_size_bytes = 7;
+}
+
+message Empty {}

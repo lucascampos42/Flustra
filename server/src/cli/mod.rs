@@ -15,6 +15,8 @@ pub enum Commands {
     Serve,
     #[command(about = "Database operations")]
     Db(DbArgs),
+    #[command(about = "Show cluster health information")]
+    ClusterHealth,
 }
 
 #[derive(clap::Args)]

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package flustra.protocols.events;
+
+message ServerEvent {
+  string event_type = 1;
+  string payload_json = 2;
+  string timestamp = 3;
+}
+
+message MediaScanStarted {
+  string path = 1;
+}
+
+message MediaScanCompleted {
+  string path = 1;
+  int32 items_found = 2;
+}
+
+message SessionCreated {
+  string user_id = 1;
+  string session_id = 2;
+}
+
+message SessionDestroyed {
+  string user_id = 1;
+  string session_id = 2;
+}

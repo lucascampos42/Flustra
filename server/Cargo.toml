@@ -8,11 +8,19 @@ edition = "2021"
 tokio = { version = "1", features = ["full"] }
 
 # HTTP framework
-axum = { version = "0.8", features = ["macros"] }
+axum = { version = "0.8", features = ["macros", "ws"] }
 tower-http = { version = "0.6", features = ["cors", "compression-gzip", "request-id", "trace"] }
+
+# Protobuf
+prost = "0.13"
+
+# WebSocket
+tokio-tungstenite = "0.24"
+futures-util = "0.3"
 
 # Config
 toml = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 directories = "6"
@@ -27,13 +35,24 @@ tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
 # Database
 sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "postgres", "migrate", "uuid"] }
 
+# Auth / Crypto
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.22"
+
+# HTTP client (cluster health checks)
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+
 # Error handling
 anyhow = "1"
 
 # Utilities
-uuid = { version = "1", features = ["v4"] }
+uuid = { version = "1", features = ["v4", "serde"] }
 num_cpus = "1"
 dashmap = "6"
+
+[build-dependencies]
+prost-build = "0.13"
 
 [dev-dependencies]
 tempfile = "3"

@@ -1,0 +1,21 @@
+[server]
+host = "0.0.0.0"
+port = 8080
+data_dir = "data"
+worker_threads = 4
+
+[logging]
+level = "info"
+format = "text"
+
+[storage]
+db_url = "sqlite://data/flustra.db"
+max_connections = 10
+
+[security]
+jwt_secret = "change-me-in-production"
+token_expiry_secs = 86400
+
+[plugins]
+dir = "plugins/installed"
+enabled = []

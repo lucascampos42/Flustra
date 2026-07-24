@@ -1,0 +1,11 @@
+.env
+.agents/
+.opencode/
+data/
+logs/
+plugins/installed/
+target/
+*.so
+*.dll
+*.dylib
+.DS_Store

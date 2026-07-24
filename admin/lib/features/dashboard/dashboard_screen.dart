@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/constants.dart';
 import '../../providers/providers.dart';
-import '../../models/models.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -31,7 +31,7 @@ class DashboardScreen extends ConsumerWidget {
               const SizedBox(height: 8),
               Text('Could not connect to server', style: theme.textTheme.bodyLarge),
               const SizedBox(height: 4),
-              Text('${AppConstants.serverBaseUrl}', style: theme.textTheme.bodySmall),
+              Text(AppConstants.serverBaseUrl, style: theme.textTheme.bodySmall),
               const SizedBox(height: 12),
               FilledButton.icon(
                 onPressed: () => ref.invalidate(statusProvider),

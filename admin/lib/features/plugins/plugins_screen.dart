@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/providers.dart';
-import '../../models/models.dart';
 
 class PluginsScreen extends ConsumerWidget {
   const PluginsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final pluginsAsync = ref.watch(pluginsProvider);
 
     return Scaffold(

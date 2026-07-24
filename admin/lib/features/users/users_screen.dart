@@ -12,7 +12,6 @@ class UsersScreen extends ConsumerStatefulWidget {
 class _UsersScreenState extends ConsumerState<UsersScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final usersAsync = ref.watch(usersProvider);
 
     return Scaffold(
@@ -80,7 +79,7 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
             TextField(controller: passwordCtrl, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: role,
+              initialValue: role,
               decoration: const InputDecoration(labelText: 'Role'),
               items: const [
                 DropdownMenuItem(value: 'admin', child: Text('Admin')),

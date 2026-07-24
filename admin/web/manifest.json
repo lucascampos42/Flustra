@@ -1,11 +1,11 @@
 {
-    "name": "admin",
-    "short_name": "admin",
+    "name": "Flustra Admin",
+    "short_name": "Flustra",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#121212",
+    "theme_color": "#121212",
+    "description": "Flustra Admin Panel — Your media, your way",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

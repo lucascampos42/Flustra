@@ -7,7 +7,15 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Flustra Admin')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Image.asset('assets/logo.png', height: 28),
+            const SizedBox(width: 8),
+            const Text('Flustra Admin'),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
